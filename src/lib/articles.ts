@@ -34,3 +34,10 @@ export async function getAllArticles() {
 
   return articles.sort((a, z) => +new Date(z.date) - +new Date(a.date))
 }
+
+// Next.js `generateStaticParams` 헬퍼로 사용할 수 있는 유틸 함수입니다.
+// 예: export async function generateStaticParams() { return getArticleStaticParams() }
+export async function getArticleStaticParams() {
+  const articles = await getAllArticles()
+  return articles.map((article) => ({ slug: article.slug }))
+}
