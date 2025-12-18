@@ -99,7 +99,7 @@ Card.Eyebrow = function CardEyebrow<T extends React.ElementType = 'p'>({
   as?: T
   decorate?: boolean
 }) {
-  let Component = as ?? 'p'
+  const Component = as ?? 'p'
 
   return (
     <Component

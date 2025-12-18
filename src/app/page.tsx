@@ -5,12 +5,7 @@ import clsx from 'clsx'
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
 import { Container } from '@/components/Container'
-import {
-  GitHubIcon,
-  InstagramIcon,
-  // LinkedInIcon,
-  // XIcon,
-} from '@/components/SocialIcons'
+import { GitHubIcon, InstagramIcon } from '@/components/SocialIcons'
 
 import logoGlobit from '@/images/logos/globit.png'
 import logoSocFlow from '@/images/logos/socflow.png'
@@ -68,18 +63,7 @@ function BriefcaseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   )
 }
 
-function ArrowDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
-  return (
-    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
-      <path
-        d="M4.75 8.75 8 12.25m0 0 3.25-3.5M8 12.25v-8.5"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
+// ArrowDownIcon: 현재 사용하지 않아 제거했습니다. 필요해지면 다시 추가하세요.
 
 function Article({ article }: { article: ArticleWithSlug }) {
   return (
