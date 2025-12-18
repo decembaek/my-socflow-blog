@@ -320,11 +320,13 @@ export function Header() {
 
       const scrollY = downDelay - window.scrollY
 
-      const scale = (scrollY * (fromScale - toScale)) / downDelay + toScale
-      const scaled = clamp(scale, fromScale, toScale)
+      const scale = clamp(
+        (scrollY * (fromScale - toScale)) / downDelay + toScale,
+        fromScale,
+        toScale,
+      )
 
-      const x = (scrollY * (fromX - toX)) / downDelay + toX
-      const clampedX = clamp(x, fromX, toX)
+      const x = clamp((scrollY * (fromX - toX)) / downDelay + toX, fromX, toX)
 
       setProperty(
         '--avatar-image-transform',

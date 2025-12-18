@@ -199,6 +199,7 @@ ${imagesSnippet}
                     className="flex gap-3 rounded-md border px-3 py-2 text-xs"
                   >
                     <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded bg-gray-50">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={img.previewUrl}
                         alt={img.alt}
@@ -256,6 +257,7 @@ ${imagesSnippet}
                 <div className="mt-6 grid grid-cols-2 gap-4">
                   {images.map((img) => (
                     <figure key={img.id} className="space-y-1">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={img.previewUrl}
                         alt={img.alt}
