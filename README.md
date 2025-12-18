@@ -1,47 +1,42 @@
-# OpenNext Starter
+# Spotlight
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Spotlight is a [Tailwind Plus](https://tailwindcss.com/plus) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
 
-## Getting Started
+## Getting started
 
-Read the documentation at https://opennext.js.org/cloudflare.
+To get started with this template, first install the npm dependencies:
 
-## Develop
+```bash
+npm install
+```
 
-Run the Next.js development server:
+Next, create a `.env.local` file in the root of your project and set the `NEXT_PUBLIC_SITE_URL` variable to your site's public URL:
+
+```
+NEXT_PUBLIC_SITE_URL=https://example.com
+```
+
+Next, run the development server:
 
 ```bash
 npm run dev
-# or similar package manager command
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Customizing
 
-## Preview
+You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
 
-Preview the application locally on the Cloudflare runtime:
+## License
 
-```bash
-npm run preview
-# or similar package manager command
-```
+This site template is a commercial product and is licensed under the [Tailwind Plus license](https://tailwindcss.com/plus/license).
 
-## Deploy
+## Learn more
 
-Deploy the application to Cloudflare:
+To learn more about the technologies used in this site template, see the following resources:
 
-```bash
-npm run deploy
-# or similar package manager command
-```
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
+- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
+- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
+- [MDX](https://mdxjs.com) - the MDX documentation
