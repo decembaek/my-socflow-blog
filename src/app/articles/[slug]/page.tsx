@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 
 import { getArticleStaticParams } from '@/lib/articles'
 import { getSiteUrl } from '@/lib/site'
+import { useMDXComponents as getMDXComponents } from '../../../../mdx-components'
 
 export const dynamicParams = false
 
@@ -75,7 +76,8 @@ export default async function ArticlePage({
     const { slug } = await params
 
     const mod = (await import(`../${slug}/page.mdx`)) as {
-      default: React.ComponentType
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      default: React.ComponentType<any>
       article?: {
         title?: string
         description?: string
@@ -85,6 +87,7 @@ export default async function ArticlePage({
     }
 
     const MDXContent = mod.default
+    const mdxComponents = getMDXComponents({})
 
     const siteUrl = getSiteUrl()
     const jsonLd = mod.article?.title
@@ -109,7 +112,7 @@ export default async function ArticlePage({
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
         )}
-        <MDXContent />
+        <MDXContent components={mdxComponents} />
       </>
     )
   } catch {
