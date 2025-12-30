@@ -1,0 +1,248 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+
+import appStoreImage from './app-store-main.png'
+import tauriArchitectureImage from './tauri-architecture.png'
+import scanResultImage from './scan-result.png'
+import qrcodeImage from './qrcode.png'
+
+export const article = {
+  author: 'Decembaek',
+  date: '2025-12-30',
+  title: '혼자 만든 첫 macOS 앱, 앱스토어에 올리기까지',
+  description:
+    '웹 개발자가 macOS 네이티브 앱을 처음 만들어 앱스토어에 출시하기까지의 여정. Tauri와 React로 만든 저장 공간 정리 앱 Soc Space의 탄생 이야기.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+회사에서 웹 서버 개발로 커리어를 시작한 지 2년 반.  
+언제나 백엔드와 프론트엔드 사이를 오가며 작업했지만,  
+어느 순간부터 "혼자 처음부터 끝까지 만들어보고 싶다"는 생각이 들었다.
+
+그래서 시작한 것이 macOS 앱 개발이었고,  
+드디어 오늘, 내 이름으로 첫 번째 앱을 앱스토어에 출시했다.
+
+<Image src={appStoreImage} alt="SocSpace 앱스토어 제품 페이지" />
+
+---
+
+## 시작은 작은 불편함에서
+
+맥북으로 작업하다 보면 늘 마주치는 문제가 하나 있다.  
+**"저장 공간이 부족합니다"** 알림.
+
+Xcode, Docker, Android Studio, Adobe 계열 앱들을 쓰다 보면  
+`~/Library/Caches`나 `~/Library/Application Support` 아래에  
+수십 GB씩 쌓이는 캐시 파일들이 계속 생긴다.
+
+수동으로 하나씩 찾아서 지우기엔 너무 번거롭고,  
+기존 클리너 앱들은 뭔가 과하게 느껴졌다.
+
+"내가 쓸 걸 직접 만들면 어떨까?"
+
+---
+
+## 기술 스택 선택: Tauri를 만나다
+
+처음엔 Electron을 생각했지만,  
+번들 크기와 메모리 사용량이 걱정됐다.
+
+그러다 Tauri를 알게 됐다.
+
+- **Rust 기반의 가벼운 런타임**
+- **웹 기술(React/Vue/Svelte)로 UI 개발**
+- **네이티브 API 접근이 쉬움**
+- **빌드 결과물이 10MB 이하**
+
+웹 개발자로서 익숙한 React + TypeScript를 쓸 수 있고,  
+macOS 네이티브 기능(파일 시스템 접근, 권한 관리)도  
+Rust로 작성된 커맨드를 통해 안전하게 다룰 수 있었다.
+
+```rust
+// Rust 커맨드 예시 (src-tauri/src/lib.rs)
+#[tauri::command]
+fn get_installed_apps() -> Vec<AppInfo> {
+    // macOS 시스템 프로파일러로 설치된 앱 목록 가져오기
+    // ...
+}
+```
+
+<Image src={tauriArchitectureImage} alt="Tauri 아키텍처 다이어그램" />
+
+---
+
+## 밤마다 고치던 버그들
+
+### 1. 권한 문제
+
+처음엔 `~/Library`에 접근조차 안 됐다.  
+macOS Sandbox 권한을 제대로 설정하지 않아서였다.
+
+`Entitlements.plist`를 작성하고,  
+사용자에게 적절한 시점에 권한을 요청하도록 플로우를 짰다.
+
+### 2. 앱 번들 식별
+
+설치된 앱을 찾는 것까지는 됐는데,  
+**어떤 캐시가 어떤 앱 것인지 매칭**하는 게 생각보다 복잡했다.
+
+`system_profiler SPApplicationsDataType -json`으로 앱 번들 ID를 가져오고,  
+Library 아래 디렉토리 이름과 **string similarity**로 매칭하는 알고리즘을 짰다.
+
+```typescript
+// src/lib/fileSystem.ts
+const similarity = stringSimilarity.compareTwoStrings(
+  dirName.toLowerCase(),
+  bundleId.toLowerCase()
+);
+
+if (similarity > 0.6) {
+  // 이 디렉토리는 해당 앱 것으로 추정
+}
+```
+
+### 3. 안전한 삭제
+
+실수로 시스템 파일을 지우면 안 되니까,  
+**시스템 핵심 디렉토리 블랙리스트**를 만들고,  
+삭제 전에 사용자에게 두 번 확인을 받도록 했다.
+
+<Image src={scanResultImage} alt="앱 UI - 스캔 결과 화면" />
+
+---
+
+## "이게 맞나?" 싶던 순간들
+
+혼자 만들다 보니 매 순간이 선택의 연속이었다.
+
+- UI는 간결하게 vs 기능을 더 많이?
+- 자동 정리 vs 수동 선택?
+- 다국어는 어디까지?
+- 앱 아이콘은 어떤 느낌으로?
+
+답이 없는 질문들이었지만,  
+"내가 쓰기 편한 게 남도 쓰기 편하겠지"라는 생각으로  
+하나씩 결정해 나갔다.
+
+---
+
+## Soc Space가 하는 일
+
+최종적으로 완성된 앱은 이렇게 동작한다:
+
+### 1. 스마트 스캔
+
+- 설치된 앱 목록을 자동으로 가져온다
+- `~/Library` 아래 주요 경로를 스캔한다
+  - Application Support
+  - Caches
+  - Containers
+  - Group Containers
+
+### 2. 지능형 매칭
+
+- 캐시/데이터 폴더와 앱을 자동으로 연결한다
+- 이미 삭제된 앱의 잔여 파일도 찾아낸다
+
+### 3. 안전한 정리
+
+- 시스템 필수 파일은 자동으로 제외
+- 정리 가능한 용량을 미리 보여준다
+- 한 번의 클릭으로 선택한 항목만 정리
+
+---
+
+## 앱스토어 업로드까지
+
+코드를 완성하는 것과 앱스토어에 올리는 것은 또 다른 문제였다.
+
+- **Apple Developer 등록**
+- **Code Signing & Provisioning Profile 설정**
+- **Notarization 통과** (Apple의 보안 검증)
+- **앱스토어 심사 준비** (스크린샷, 설명, 개인정보 정책)
+
+특히 Code Signing은 인증서 체인, Entitlements, Xcode 빌드 설정이  
+모두 맞아떨어져야 해서 며칠을 헤맸다.
+
+하지만 결국 해냈고,  
+**"Your app is ready for sale"** 이메일을 받는 순간은  
+정말... 말로 표현하기 어려운 뿌듯함이었다.
+
+---
+
+## 이제는 아이콘 하나로
+
+밤에 혼자 고치던 버그들이랑  
+'이게 맞나?' 싶던 순간들이  
+이제는 Dock에 있는 **아이콘 하나**로 남았다.
+
+클릭 한 번이면 열리는 앱.  
+내가 필요해서 만들었고,  
+이제 다른 사람도 쓸 수 있는 앱.
+
+---
+
+## 배운 것들
+
+### 기술적으로
+
+- **Rust** 기초부터 시작해서 Tauri 커맨드 작성까지
+- **macOS 앱 생명주기**와 Sandbox/Entitlements
+- **네이티브 API** 호출과 비동기 처리
+- **Code Signing** & Notarization 프로세스
+
+### 개인적으로
+
+- 혼자서도 끝까지 해낼 수 있다는 자신감
+- "완벽"보다는 "동작하는 버전"을 먼저 내놓는 법
+- 사용자 관점에서 생각하는 습관
+
+---
+
+## 다음 목표
+
+Soc Space는 1.0이 아니라 시작일 뿐이다.
+
+다음 버전에서는:
+
+- ✅ 더 정교한 앱 매칭 알고리즘
+- ✅ 클라우드 백업 연동
+- ✅ 필요없는 로그 정리
+
+을 추가하고 싶다.
+
+그리고 언젠가는 iOS(모바일) 버전도 만들어보고 싶다.
+
+---
+
+## 마치며
+
+웹 개발자가 네이티브 앱을 만드는 게 어렵다고들 한다.  
+맞다. 쉽지 않았다.
+
+하지만 **불가능하진 않았다.**
+
+혹시 당신도 "혼자 앱 하나 만들어보고 싶다"는 생각이 든다면,  
+지금 바로 시작해보길 권한다.
+
+처음 만든 앱이 완벽할 순 없지만,  
+완성하지 않으면 배울 수도 없으니까.
+
+---
+
+### Soc Space 다운로드
+
+👉 [https://socspace.app](https://socspace.app)
+
+### 업데이트 필요사항
+
+- 개발 후 내 맥북에서는 잘 되나 다른 상황에서는 안 되는 경우가 있다. 빨리 고쳐야지
+
+---
+
+_혼자 만든 앱이 누군가의 맥북을 조금이라도 가볍게 만들어줄 수 있다면, 그것만으로도 충분하다._
