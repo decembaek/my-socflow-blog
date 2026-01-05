@@ -10,25 +10,7 @@ const config = defineCloudflareConfig({
 
 // OpenNext는 Edge runtime(예: next/og로 생성되는 opengraph-image 라우트)을
 // 별도의 edge 함수 번들로 분리해야 합니다.
-config.functions = {
-  ogImage: {
-    runtime: 'edge',
-    patterns: [],
-    routes: [
-      // 전역 OG/Twitter 이미지 라우트
-      'app/opengraph-image/route',
-    ],
-  },
-  twitterImage: {
-    runtime: 'edge',
-    patterns: [],
-    routes: ['app/twitter-image/route'],
-  },
-  articleOgImage: {
-    runtime: 'edge',
-    patterns: [],
-    routes: ['app/articles/[slug]/opengraph-image/route'],
-  },
-}
+// next/og 기반 이미지 라우트는 OpenNext/Cloudflare 런타임에서 500이 발생해 제거했습니다.
+// (필요하면 public/og.png 같은 정적 이미지로 대체 권장)
 
 export default config

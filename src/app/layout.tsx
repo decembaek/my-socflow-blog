@@ -30,12 +30,18 @@ export const metadata: Metadata = {
     title: 'Decembaek - 제주도에 거주하는 소프트웨어 디자이너이자 사업가',
     description:
       '저는 제주도에 거주하는 소프트웨어 디자이너이자 사업가인 Decembaek 입니다. 저는 애니백의 창립자이자 CEO로, 일반 사람들도 스스로 자동화를 만들어서 작업할 수 있도록 지원하는 기술을 개발하고 있습니다.',
+    images: [
+      {
+        url: '/favicon.svg',
+      },
+    ],
   },
   twitter: {
     card: 'summary',
     title: 'Decembaek - 제주도에 거주하는 소프트웨어 디자이너이자 사업가',
     description:
       '저는 제주도에 거주하는 소프트웨어 디자이너이자 사업가인 Decembaek 입니다. 저는 애니백의 창립자이자 CEO로, 일반 사람들도 스스로 자동화를 만들어서 작업할 수 있도록 지원하는 기술을 개발하고 있습니다.',
+    images: ['/favicon.svg'],
   },
   robots: {
     index: true,
