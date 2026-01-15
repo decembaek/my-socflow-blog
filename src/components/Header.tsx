@@ -15,7 +15,8 @@ import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
 // import avatarImage from '@/images/avatar.jpg'
-import avatarImage from '@/images/photos/profile.jpeg'
+
+import avatarImage from '@/images/logos/socflow.png'
 
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -85,6 +86,23 @@ function MobileNavItem({
   href: string
   children: React.ReactNode
 }) {
+  const isExternal = href.startsWith('http')
+
+  if (isExternal) {
+    return (
+      <li>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block py-2"
+        >
+          {children}
+        </a>
+      </li>
+    )
+  }
+
   return (
     <li>
       <PopoverButton as={Link} href={href} className="block py-2">
@@ -99,7 +117,7 @@ function MobileNavigation(
 ) {
   return (
     <Popover {...props}>
-      <PopoverButton className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur-sm dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 dark:hover:ring-white/20">
+      <PopoverButton className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/20 backdrop-blur-sm dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/40 dark:hover:ring-white/50">
         Menu
         <ChevronDownIcon className="ml-3 h-auto w-2 stroke-zinc-500 group-hover:stroke-zinc-700 dark:group-hover:stroke-zinc-400" />
       </PopoverButton>
@@ -110,7 +128,7 @@ function MobileNavigation(
       <PopoverPanel
         focus
         transition
-        className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-zinc-900/5 duration-150 data-closed:scale-95 data-closed:opacity-0 data-enter:ease-out data-leave:ease-in dark:bg-zinc-900 dark:ring-zinc-800"
+        className="fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-zinc-900/15 duration-150 data-closed:scale-95 data-closed:opacity-0 data-enter:ease-out data-leave:ease-in dark:bg-zinc-900 dark:ring-zinc-700/60"
       >
         <div className="flex flex-row-reverse items-center justify-between">
           <PopoverButton aria-label="Close menu" className="-m-1 p-1">
@@ -121,12 +139,12 @@ function MobileNavigation(
           </h2>
         </div>
         <nav className="mt-6">
-          <ul className="-my-2 divide-y divide-zinc-100 text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300">
-            <MobileNavItem href="/about">소개</MobileNavItem>
-            <MobileNavItem href="/articles">게시글</MobileNavItem>
-            <MobileNavItem href="/projects">프로젝트</MobileNavItem>
-            {/* <MobileNavItem href="/speaking">스피치</MobileNavItem> */}
-            <MobileNavItem href="/uses">사용 기술</MobileNavItem>
+          <ul className="-my-2 divide-y divide-zinc-200/70 text-base text-zinc-800 dark:divide-zinc-100/20 dark:text-zinc-300">
+            <MobileNavItem href="https://socflow.app">
+              SocFlow 사용하기
+            </MobileNavItem>
+            <MobileNavItem href="/about">서비스 소개</MobileNavItem>
+            <MobileNavItem href="/blog">블로그</MobileNavItem>
           </ul>
         </nav>
       </PopoverPanel>
@@ -142,23 +160,34 @@ function NavItem({
   children: React.ReactNode
 }) {
   const isActive = usePathname() === href
+  const isExternal = href.startsWith('http')
+
+  const className = clsx(
+    'relative block px-3 py-2 transition',
+    isActive
+      ? 'text-violet-500 dark:text-violet-400'
+      : 'hover:text-violet-500 dark:hover:text-violet-400',
+  )
 
   return (
     <li>
-      <Link
-        href={href}
-        className={clsx(
-          'relative block px-3 py-2 transition',
-          isActive
-            ? 'text-teal-500 dark:text-teal-400'
-            : 'hover:text-teal-500 dark:hover:text-teal-400',
-        )}
-      >
-        {children}
-        {isActive && (
-          <span className="absolute inset-x-1 -bottom-px h-px bg-linear-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0" />
-        )}
-      </Link>
+      {isExternal ? (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={className}
+        >
+          {children}
+        </a>
+      ) : (
+        <Link href={href} className={className}>
+          {children}
+          {isActive && (
+            <span className="absolute inset-x-1 -bottom-px h-px bg-linear-to-r from-violet-500/0 via-violet-500/40 to-violet-500/0 dark:from-violet-400/0 dark:via-violet-400/40 dark:to-violet-400/0" />
+          )}
+        </Link>
+      )}
     </li>
   )
 }
@@ -166,12 +195,10 @@ function NavItem({
 function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
   return (
     <nav {...props}>
-      <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur-sm dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
-        <NavItem href="/about">소개</NavItem>
-        <NavItem href="/articles">게시글</NavItem>
-        <NavItem href="/projects">프로젝트</NavItem>
-        {/* <NavItem href="/speaking">스피치</NavItem> */}
-        <NavItem href="/uses">사용 기술</NavItem>
+      <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/20 backdrop-blur-sm dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/40">
+        <NavItem href="https://socflow.app">SocFlow 사용하기</NavItem>
+        <NavItem href="/about">서비스 소개</NavItem>
+        <NavItem href="/blog">블로그</NavItem>
       </ul>
     </nav>
   )
@@ -190,11 +217,11 @@ function ThemeToggle() {
     <button
       type="button"
       aria-label={mounted ? `Switch to ${otherTheme} theme` : 'Toggle theme'}
-      className="group rounded-full bg-white/90 px-3 py-2 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur-sm transition dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:ring-white/20"
+      className="group rounded-full bg-white/90 px-3 py-2 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/20 backdrop-blur-sm transition dark:bg-zinc-800/90 dark:ring-white/40 dark:hover:ring-white/50"
       onClick={() => setTheme(otherTheme)}
     >
-      <SunIcon className="h-6 w-6 fill-zinc-100 stroke-zinc-500 transition group-hover:fill-zinc-200 group-hover:stroke-zinc-700 dark:hidden [@media(prefers-color-scheme:dark)]:fill-teal-50 [@media(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-hover:fill-teal-50 [@media(prefers-color-scheme:dark)]:group-hover:stroke-teal-600" />
-      <MoonIcon className="hidden h-6 w-6 fill-zinc-700 stroke-zinc-500 transition not-[@media_(prefers-color-scheme:dark)]:fill-teal-400/10 not-[@media_(prefers-color-scheme:dark)]:stroke-teal-500 dark:block [@media(prefers-color-scheme:dark)]:group-hover:stroke-zinc-400" />
+      <SunIcon className="h-6 w-6 fill-zinc-100 stroke-zinc-500 transition group-hover:fill-zinc-200 group-hover:stroke-zinc-700 dark:hidden [@media(prefers-color-scheme:dark)]:fill-violet-50 [@media(prefers-color-scheme:dark)]:stroke-violet-500 [@media(prefers-color-scheme:dark)]:group-hover:fill-violet-50 [@media(prefers-color-scheme:dark)]:group-hover:stroke-violet-600" />
+      <MoonIcon className="hidden h-6 w-6 fill-zinc-700 stroke-zinc-500 transition not-[@media_(prefers-color-scheme:dark)]:fill-violet-400/10 not-[@media_(prefers-color-scheme:dark)]:stroke-violet-500 dark:block [@media(prefers-color-scheme:dark)]:group-hover:stroke-zinc-400" />
     </button>
   )
 }
@@ -213,7 +240,7 @@ function AvatarContainer({
     <div
       className={clsx(
         className,
-        'h-10 w-10 rounded-full bg-white/90 p-0.5 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur-sm dark:bg-zinc-800/90 dark:ring-white/10',
+        'h-10 w-10 rounded-full bg-white/90 p-0.5 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/20 backdrop-blur-sm dark:bg-zinc-800/90 dark:ring-white/40',
       )}
       {...props}
     />

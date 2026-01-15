@@ -29,17 +29,17 @@ export async function GET(req: Request) {
   })
 
   const articleIds = require
-    .context('../articles', true, /\/page\.mdx$/)
+    .context('../blog', true, /\/page\.mdx$/)
     .keys()
     .filter((key) => key.startsWith('./'))
     .map((key) => key.slice(2).replace(/\/page\.mdx$/, ''))
 
   for (const id of articleIds) {
-    const url = String(new URL(`/articles/${id}`, req.url))
+    const url = String(new URL(`/blog/${id}`, req.url))
     const html = await (await fetch(url)).text()
     const $ = cheerio.load(html)
 
-    const publicUrl = `${siteUrl}/articles/${id}`
+    const publicUrl = `${siteUrl}/blog/${id}`
     const article = $('article').first()
     const title = article.find('h1').first().text()
     const date = article.find('time').first().attr('datetime')

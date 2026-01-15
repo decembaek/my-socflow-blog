@@ -6,7 +6,36 @@ import remarkGfm from 'remark-gfm'
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
   outputFileTracingIncludes: {
-    '/articles/*': ['./src/app/articles/**/*.mdx'],
+    '/blog/*': ['./src/app/blog/**/*.mdx'],
+  },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/articles',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/articles/:slug*',
+        destination: '/blog/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/projects',
+        destination: '/blog',
+        permanent: true,
+      },
+      {
+        source: '/uses',
+        destination: '/blog',
+        permanent: true,
+      },
+    ]
   },
 }
 

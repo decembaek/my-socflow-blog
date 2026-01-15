@@ -1,10 +1,20 @@
 import glob from 'fast-glob'
 
+export type ArticleCategory =
+  | '제품 업데이트'
+  | '활용법'
+  | '트렌드'
+  | '고객 사례'
+  | '뉴스'
+  | '이벤트'
+  | '크리에이터 인터뷰'
+
 interface Article {
   title: string
   description: string
   author: string
   date: string
+  category?: ArticleCategory
 }
 
 export interface ArticleWithSlug extends Article {
@@ -17,7 +27,7 @@ function getArticleFilenamesFromWebpackContext() {
   // require.context를 직접 호출하는 형태로 유지합니다.
   try {
     const keys = require
-      .context('../app/articles', true, /\/page\.mdx$/)
+      .context('../app/blog', true, /\/page\.mdx$/)
       .keys()
       .filter((key: string) => key.startsWith('./'))
 
@@ -31,7 +41,7 @@ function getArticleFilenamesFromWebpackContext() {
 async function importArticle(
   articleFilename: string,
 ): Promise<ArticleWithSlug> {
-  const { article } = (await import(`../app/articles/${articleFilename}`)) as {
+  const { article } = (await import(`../app/blog/${articleFilename}`)) as {
     default: React.ComponentType
     article: Article
   }
@@ -46,7 +56,7 @@ export async function getAllArticles() {
   const articleFilenames =
     getArticleFilenamesFromWebpackContext() ??
     (await glob('*/page.mdx', {
-      cwd: './src/app/articles',
+      cwd: './src/app/blog',
     }))
 
   const articles = await Promise.all(articleFilenames.map(importArticle))

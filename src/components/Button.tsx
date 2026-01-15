@@ -8,27 +8,55 @@ const variantStyles = {
     'bg-zinc-50 font-medium text-zinc-900 hover:bg-zinc-100 active:bg-zinc-100 active:text-zinc-900/60 dark:bg-zinc-800/50 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 dark:active:bg-zinc-800/50 dark:active:text-zinc-50/70',
 }
 
-type ButtonProps = {
+const sizeStyles = {
+  sm: 'py-2 px-3 text-sm',
+  lg: 'py-3 px-6 text-base',
+}
+
+type ButtonPropsBase = {
   variant?: keyof typeof variantStyles
-} & (
-  | (React.ComponentPropsWithoutRef<'button'> & { href?: undefined })
-  | React.ComponentPropsWithoutRef<typeof Link>
-)
+  size?: keyof typeof sizeStyles
+}
+
+type ButtonProps = ButtonPropsBase &
+  (
+    | (React.ComponentPropsWithoutRef<'button'> & { href?: undefined })
+    | (React.ComponentPropsWithoutRef<typeof Link> & { target?: string })
+  )
 
 export function Button({
   variant = 'primary',
+  size = 'sm',
   className,
   ...props
 }: ButtonProps) {
   className = clsx(
-    'inline-flex items-center gap-2 justify-center rounded-md py-2 px-3 text-sm outline-offset-2 transition active:transition-none',
+    'inline-flex items-center gap-2 justify-center rounded-md outline-offset-2 transition active:transition-none',
     variantStyles[variant],
+    sizeStyles[size],
     className,
   )
 
-  return typeof props.href === 'undefined' ? (
-    <button className={className} {...props} />
-  ) : (
-    <Link className={className} {...props} />
-  )
+  if (typeof props.href !== 'undefined' && props.href) {
+    if ('target' in props && props.target === '_blank') {
+      const { target, href, ...linkProps } = props as {
+        href: string
+        target: string
+      }
+      return (
+        <a
+          href={href}
+          target={target}
+          rel="noopener noreferrer"
+          className={className}
+          {...linkProps}
+        />
+      )
+    }
+    return <Link className={className} {...props} />
+  }
+
+  // href가 없으면 button props만 사용
+  const buttonProps = props as React.ComponentPropsWithoutRef<'button'>
+  return <button className={className} {...buttonProps} />
 }

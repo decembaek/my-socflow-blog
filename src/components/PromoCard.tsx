@@ -29,7 +29,7 @@ export function PromoCard({
       className={clsx(
         className,
         'not-prose group relative block overflow-hidden rounded-2xl border border-zinc-200/70 bg-white p-5 shadow-sm',
-        'transition hover:-translate-y-0.5 hover:shadow-md focus:ring-2 focus:ring-teal-500/30 focus:outline-none',
+        'transition hover:-translate-y-0.5 hover:shadow-md focus:ring-2 focus:ring-violet-500/30 focus:outline-none',
         'dark:border-zinc-700/60 dark:bg-zinc-900/40',
       )}
       aria-label={`${title}로 이동`}
@@ -50,7 +50,7 @@ export function PromoCard({
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             {badge && (
-              <span className="rounded-full bg-teal-500/10 px-2 py-0.5 text-xs font-medium text-teal-700 dark:bg-teal-400/10 dark:text-teal-300">
+              <span className="rounded-full bg-violet-500/10 px-2 py-0.5 text-xs font-medium text-violet-700 dark:bg-violet-400/10 dark:text-violet-300">
                 {badge}
               </span>
             )}
@@ -61,7 +61,7 @@ export function PromoCard({
           <div className="mt-2 line-clamp-3 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
             {description}
           </div>
-          <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-teal-600 group-hover:text-teal-700 dark:text-teal-400 dark:group-hover:text-teal-300">
+          <div className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-violet-600 group-hover:text-violet-700 dark:text-violet-400 dark:group-hover:text-violet-300">
             {cta}
             <span aria-hidden="true">→</span>
           </div>
